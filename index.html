@@ -62,6 +62,13 @@
       font-size: 1.2em;
     }
 
+    #mensagem {
+      color: #e74c3c;
+      font-weight: bold;
+      margin-top: 20px;
+      text-align: center;
+    }
+
     @media (max-width: 768px) {
       table, thead, tbody, th, td, tr {
         font-size: 12px;
@@ -150,6 +157,8 @@
     </tfoot>
   </table>
 
+  <div id="mensagem"></div>
+
   <script>
     function calcularNotas(input) {
       const row = input.parentElement.parentElement;
@@ -175,7 +184,15 @@
         const val = parseFloat(cell.textContent) || 0;
         total += val;
       });
-      document.getElementById('total-nota-final').textContent = total.toFixed(3);
+
+      const totalNotaFinal = document.getElementById('total-nota-final');
+      totalNotaFinal.textContent = total.toFixed(3);
+
+      if (total > 9) {
+        document.getElementById('mensagem').textContent = "Parabéns pelo MB1";
+      } else {
+        document.getElementById('mensagem').textContent = "";
+      }
     }
 
     // Preenche os valores de escore ao carregar
