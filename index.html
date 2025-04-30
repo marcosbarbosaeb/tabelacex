@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tabela de Notas</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9f9f9;
+      padding: 40px;
+      color: #333;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #2c3e50;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 960px;
+      margin: auto;
+      background-color: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    thead {
+      background-color: #2c3e50;
+      color: #fff;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    tbody tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    tfoot {
+      background-color: #ecf0f1;
+      font-weight: bold;
+    }
+
+    input[type="number"] {
+      width: 80px;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    #total-nota-final {
+      color: #27ae60;
+      font-size: 1.2em;
+    }
+
+    @media (max-width: 768px) {
+      table, thead, tbody, th, td, tr {
+        font-size: 12px;
+      }
+
+      input[type="number"] {
+        width: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>Tabela de Cálculo de Nota Final</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Parte da Prova</th>
+        <th>Peso</th>
+        <th>Escores Totais</th>
+        <th>Nota Máxima</th>
+        <th>Valor do Escore</th>
+        <th>Escores Obtidos</th>
+        <th>Nota Parcial</th>
+        <th>Nota Final</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-peso="0.1" data-escores="218" data-maximo="10">
+        <td>1-Individual</td>
+        <td>10%</td>
+        <td>218</td>
+        <td>10</td>
+        <td class="valor-escore"></td>
+        <td><input type="number" oninput="calcularNotas(this)" /></td>
+        <td class="nota-parcial"></td>
+        <td class="nota-final"></td>
+      </tr>
+      <tr data-peso="0.1" data-escores="584" data-maximo="10">
+        <td>2-Grupo</td>
+        <td>10%</td>
+        <td>584</td>
+        <td>10</td>
+        <td class="valor-escore"></td>
+        <td><input type="number" oninput="calcularNotas(this)" /></td>
+        <td class="nota-parcial"></td>
+        <td class="nota-final"></td>
+      </tr>
+      <tr data-peso="0.3" data-escores="96" data-maximo="10">
+        <td>3-Individual</td>
+        <td>30%</td>
+        <td>96</td>
+        <td>10</td>
+        <td class="valor-escore"></td>
+        <td><input type="number" oninput="calcularNotas(this)" /></td>
+        <td class="nota-parcial"></td>
+        <td class="nota-final"></td>
+      </tr>
+      <tr data-peso="0.3" data-escores="160" data-maximo="10">
+        <td>4-Grupo</td>
+        <td>30%</td>
+        <td>160</td>
+        <td>10</td>
+        <td class="valor-escore"></td>
+        <td><input type="number" oninput="calcularNotas(this)" /></td>
+        <td class="nota-parcial"></td>
+        <td class="nota-final"></td>
+      </tr>
+      <tr data-peso="0.2" data-escores="64" data-maximo="10">
+        <td>5-Individual</td>
+        <td>20%</td>
+        <td>64</td>
+        <td>10</td>
+        <td class="valor-escore"></td>
+        <td><input type="number" oninput="calcularNotas(this)" /></td>
+        <td class="nota-parcial"></td>
+        <td class="nota-final"></td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="7">Total da Nota Final</td>
+        <td id="total-nota-final">0.000</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <script>
+    function calcularNotas(input) {
+      const row = input.parentElement.parentElement;
+      const peso = parseFloat(row.dataset.peso);
+      const escoresTotais = parseFloat(row.dataset.escores);
+      const notaMaxima = parseFloat(row.dataset.maximo);
+      const escoresObtidos = parseFloat(input.value) || 0;
+
+      const valorEscore = notaMaxima / escoresTotais;
+      const notaParcial = escoresObtidos * valorEscore;
+      const notaFinal = notaParcial * peso;
+
+      row.querySelector('.valor-escore').textContent = valorEscore.toFixed(8);
+      row.querySelector('.nota-parcial').textContent = notaParcial.toFixed(3);
+      row.querySelector('.nota-final').textContent = notaFinal.toFixed(3);
+
+      calcularTotalFinal();
+    }
+
+    function calcularTotalFinal() {
+      let total = 0;
+      document.querySelectorAll('.nota-final').forEach(cell => {
+        const val = parseFloat(cell.textContent) || 0;
+        total += val;
+      });
+      document.getElementById('total-nota-final').textContent = total.toFixed(3);
+    }
+
+    // Preenche os valores de escore ao carregar
+    document.querySelectorAll("tbody tr").forEach(tr => {
+      const max = parseFloat(tr.dataset.maximo);
+      const total = parseFloat(tr.dataset.escores);
+      const valor = max / total;
+      tr.querySelector(".valor-escore").textContent = valor.toFixed(8);
+    });
+  </script>
+</body>
+</html>
